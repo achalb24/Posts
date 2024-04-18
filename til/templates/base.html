@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Default title in here{% endblock %}</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+</head>
+<body>
+
+<!-- component is from https://tailwindcomponents.com/component/sidebar-navigation -->
+<div class="min-h-screen flex flex-row bg-gray-100">
+  <div class="flex flex-col w-56 bg-white rounded-r-3xl overflow-hidden">
+    <div class="flex items-center justify-center h-20 shadow-md">
+      <h1 class="text-3xl uppercase text-indigo-500">TIL</h1>
+    </div>
+    <ul class="flex flex-col py-4">
+      <li>
+        <a href="/" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+          <span class="inline-flex items-center justify-center h-16 w-16 text-xl text-gray-400"><i class="bx bx-home"></i></span>
+          <span class="text-sm font-medium">Home</span>
+        </a>
+      </li>
+      {% if request.user.is_authenticated %}
+        <li>
+            <a href="{% url 'app:new_post' %}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800 js-toggle-modal">
+              <span class="inline-flex items-center justify-center h-16 w-16 text-xl text-gray-400"><i class="bx bx-layer-plus"></i></span>
+              <span class="text-sm font-medium">New post</span>
+            </a>
+        </li>
+        <li>
+          <a href="" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+
+          <span class="inline-flex items-center justify-center h-16 w-16 text-xl text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+            <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+          </svg>
+          </span>
+          <span class="text-sm font-medium">Account</span>
+          </a>
+      </li>
+        <li>
+            <a href="{% url 'account_logout' %}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+            <span class="inline-flex items-center justify-center h-16 w-16 text-xl text-gray-400"><i class="bx bx-log-out"></i></span>
+            <span class="text-sm font-medium">Logout</span>
+            </a>
+        </li>
+      {% else %}
+        <li>
+            <a href="{% url 'account_login' %}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+            <span class="inline-flex items-center justify-center h-16 w-16 text-xl text-gray-400"><i class="bx bx-log-in"></i></span>
+            <span class="text-sm font-medium">Login</span>
+            </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="p-16">
+    {% block body %}
+        {% block content %}{% endblock %}
+    {% endblock %}
+  </div>
+
+
+{% if request.user.is_authenticated %}
+  <!-- component -->
+  <div class="flex items-center justify-center fixed left-0 bottom-0 w-full h-full bg-gray-800 bg-opacity-75 hidden js-modal">
+    <div class="bg-white rounded-lg w-1/2">
+      <div class="flex flex-col items-start p-4">
+        <div class="flex items-center w-full">
+          <div class="text-gray-900 font-medium text-lg">New post</div>
+      <svg class="ml-auto fill-current text-gray-700 w-6 h-6 cursor-pointer js-toggle-modal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+        <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/>
+        </svg>
+        </div>
+        <hr>
+        <div class="w-full">
+          {# TODO: Add the ajax form #}
+          <textarea class="border-2 border-blue-500 my-4 js-post-text" rows="3" placeholder="Enter your Post" maxlength="240" style="width: 100%;" data-post-url="{% url 'app:new_post' %}"></textarea>
+        </div>
+        <hr>
+        <div class="ml-auto">
+          <button class="bg-white text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-1 px-3 inline-flex items-center text-sm mt-4 js-submit" type="button">
+              <span class="mr-2">Create Post</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="currentcolor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+              </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
+<script src="{% static 'js/main.js' %}"></script>
+
+
+</body>
+</html>
